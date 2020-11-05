@@ -9,6 +9,8 @@ import { FormWrapper } from './styles';
 
 
 const Form = () =>  {
+    const [score, setScore] = useState(4)
+    const [ratings, setRatings] = useState([])
     const [data, setData] = useState({})
     const [img, setImg] = useState('')
     const [title, setTitle] = useState('')
@@ -25,20 +27,31 @@ const Form = () =>  {
             setImg(`https://image.tmdb.org/t/p/w500${results[index]['poster_path']}`)
             setTitle(results[index]['title'])
             setID(results[index]['id'])
+            setIndex(index+1)
             init = true
         })
     }, [init])
 
+    const swipe = (event) => {
+        setRatings([
+            ...ratings,
+            {
+                id,
+                score
+            }
+        ])
+        setIndex(index+1)
+        setTitle(data[index]['title'])
+        setImg(`https://image.tmdb.org/t/p/w500${data[index]['poster_path']}`)
+        setID(data[index]['id'])
+        setScore(4)
+        console.log('swipe')
+    }
+
     return(
             <FormWrapper>
                 <Swipeable 
-                    onSwipedLeft={(event) => {
-                        setIndex(index+1)
-                        setTitle(data[index]['title'])
-                        setImg(`https://image.tmdb.org/t/p/w500${data[index]['poster_path']}`)
-                        setID(data[index]['id'])
-                        console.log('swipe')
-                    }} {... {trackMouse: true}}
+                    onSwipedLeft={(event) => swipe(event)} {... {trackMouse: true}}
                     style={{
                         'width': '100%', 
                         'height': '100v%', 
@@ -61,9 +74,9 @@ const Form = () =>  {
                                 step={.5} 
                                 min={0} 
                                 max={8} 
-                                value={4} 
+                                value={score} 
                                 color='warning'
-                                // onChange={(e) => console.log(e)}
+                                onChange={(newScore) => setScore(newScore)}
                             />
                         </div>
                     </Swipeable>
