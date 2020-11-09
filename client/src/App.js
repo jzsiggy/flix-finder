@@ -1,27 +1,35 @@
 import './App.css';
-import Form from './components/form/form/Form';
 
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
 
-function App() {
+import Form from './components/form/form/Form';
+import Login from './components/auth/login/Login';
+import Signup from './components/auth/signup/Signup';
+import Playlist from './components/playlist/playlist/Playlist';
+
+const App = () => { 
   return (
     <div className="App">
       <Router>
         <Switch>
-          <Route path='/hi'>
-            hi
-          </Route>
-          <Route path='/'>
+          <Route exact path='/'>
             <Form />
+          </Route>
+          <Route path='/list'>
+            <Playlist />
+          </Route>
+          <Route path='/login'>
+            <Login />
+          </Route>
+          <Route path='/signup'>
+            <Signup />
           </Route>
         </Switch>
       </Router>
-
     </div>
   );
 }

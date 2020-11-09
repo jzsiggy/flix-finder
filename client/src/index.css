@@ -4,6 +4,7 @@ body {
   overflow: hidden;
   position: relative;
   background-color: #141414;
+  color: white;
   margin: 0;
   font-family: 'Montserrat Alternates', sans-serif;
   -webkit-font-smoothing: antialiased;

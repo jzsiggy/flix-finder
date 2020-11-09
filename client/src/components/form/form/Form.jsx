@@ -1,11 +1,13 @@
-import axios from 'axios';
-import React , { useEffect , useState } from 'react'
+import instance from '../../../instance';
+import React , { useEffect , useState , useCallback } from 'react'
 import mobiscroll from '@mobiscroll/react';
 import '@mobiscroll/react/dist/css/mobiscroll.min.css';
 import { Swipeable } from 'react-swipeable'
 
+import Logout from '../../auth/logout/Logout';
 import Card from '../card/Card';
 import { FormWrapper } from './styles';
+import { Redirect } from 'react-router-dom';
 
 
 const Form = () =>  {
@@ -16,11 +18,17 @@ const Form = () =>  {
     const [title, setTitle] = useState('')
     const [id, setID] = useState('')
     const [index, setIndex] = useState(0)
-    let init = false
+    const [auth, setAuth] = useState('busy')
+    const [redirect, setRedirect] = useState(false)
 
     useEffect(() => {
-        console.log('hey')
-        axios.get('http://localhost:5000/movies/random-movie')
+        instance.get('/auth/current-user')
+        .then(response => setAuth(true))
+        .catch(err => setAuth(false))
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        instance.get('/movies/random-movie')
         .then(response => {
             const results = response.data
             setData(results)
@@ -28,9 +36,8 @@ const Form = () =>  {
             setTitle(results[index]['title'])
             setID(results[index]['id'])
             setIndex(index+1)
-            init = true
         })
-    }, [init])
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     const swipe = (event) => {
         setRatings([
@@ -41,14 +48,27 @@ const Form = () =>  {
             }
         ])
         setIndex(index+1)
+
+        if (index > 5) {
+            setRedirect(true)
+        }
+
         setTitle(data[index]['title'])
         setImg(`https://image.tmdb.org/t/p/w500${data[index]['poster_path']}`)
         setID(data[index]['id'])
         setScore(4)
-        console.log('swipe')
     }
 
+    const changeScore = useCallback((newScore) => {
+        setScore(newScore);
+    }, [setScore]);
+
     return(
+        redirect ? <Redirect to='/list' /> :
+        auth == 'busy' ? <></> :
+        !auth ? <Redirect to='/login' /> :
+        <>
+            <Logout />
             <FormWrapper>
                 <Swipeable 
                     onSwipedLeft={(event) => swipe(event)} {... {trackMouse: true}}
@@ -58,29 +78,30 @@ const Form = () =>  {
                         'position': 'absolute',
                         'display': 'fixed'
                     }}
+                >
+                    <Card
+                        img={img}
+                        title={title}
+                        id={id}
+                    />
+                    <div
+                        style={{
+                            'display': 'flex',
+                            'justifyContent': 'center',
+                        }}
                     >
-                        <Card
-                            img={img}
-                            title={title}
-                            id={id}
+                        <mobiscroll.Rating 
+                            step={.5} 
+                            min={0} 
+                            max={8} 
+                            value={score} 
+                            color='warning'
+                            onChange={changeScore}
                         />
-                        <div
-                            style={{
-                                'display': 'flex',
-                                'justifyContent': 'center',
-                            }}
-                        >
-                            <mobiscroll.Rating 
-                                step={.5} 
-                                min={0} 
-                                max={8} 
-                                value={score} 
-                                color='warning'
-                                onChange={(newScore) => setScore(newScore)}
-                            />
-                        </div>
-                    </Swipeable>
+                    </div>
+                </Swipeable>
             </FormWrapper>
+        </>
     )
 }
 

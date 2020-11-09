@@ -6,7 +6,6 @@ const CardWrapper = styled.div`
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    color: white;
     font-weight: bold;
 `
 
