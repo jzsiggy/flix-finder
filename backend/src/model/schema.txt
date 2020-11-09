@@ -1,1 +1,1 @@
-|  ID  |  username  |  passwd  |
+|  ID  |  username  |  password  | email |
