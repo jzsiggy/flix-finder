@@ -1,11 +1,11 @@
 const axios = require('axios');
 
-const getRandomMovie = (request, response) => {
+const getPlaylist = (request, response) => {
     axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_KEY}&language=en-US&with_genres=80&page=1`)
     .then(results => {
         const resJSON = results.data.results.map(item => {
             return {
-                'poster_path' : item.poster_path,
+                'img' : `https://image.tmdb.org/t/p/w500${item.poster_path}`,
                 'id' : item.id,
                 'title' : item.title
             }
@@ -18,5 +18,5 @@ const getRandomMovie = (request, response) => {
 }
 
 module.exports = {
-    getRandomMovie
+    getPlaylist
 }

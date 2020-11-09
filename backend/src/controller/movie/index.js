@@ -1,7 +1,8 @@
-const {
-    getRandomMovie
-} = require('./getRandomMovie')
+const { getRandomMovie } = require('./getRandomMovie');
+const { getPlaylist } = require('./getPlaylist');
+
 
 module.exports = {
-    getRandomMovie
+    getRandomMovie,
+    getPlaylist
 }
